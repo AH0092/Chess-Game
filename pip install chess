@@ -1,0 +1,56 @@
+import chess
+import chess.svg
+
+# Function to display the board
+def display_board(board):
+    print(board)
+
+# Function to handle user input for moves
+def get_move():
+    while True:
+        move = input("Enter your move (in algebraic notation, e.g., e2e4): ").strip()
+        if len(move) == 4 or (len(move) == 5 and move[-1] in "qrbn"):
+            return move
+        else:
+            print("Invalid move format. Try again.")
+
+# Main chess game function
+def play_chess():
+    board = chess.Board()
+    
+    print("Welcome to the Chess Game!")
+    print("Input moves using algebraic notation (e.g., e2e4). Type 'quit' to exit.")
+    
+    while not board.is_game_over():
+        display_board(board)
+
+        # Get move from the current player
+        move = get_move()
+
+        if move.lower() == 'quit':
+            print("Game terminated by user.")
+            break
+
+        try:
+            chess_move = chess.Move.from_uci(move)
+            if chess_move in board.legal_moves:
+                board.push(chess_move)
+            else:
+                print("Illegal move. Try again.")
+        except ValueError:
+            print("Invalid move format. Try again.")
+
+    # Display game outcome
+    if board.is_checkmate():
+        print("Checkmate! Game over.")
+    elif board.is_stalemate():
+        print("Stalemate. Game over.")
+    elif board.is_insufficient_material():
+        print("Draw due to insufficient material. Game over.")
+    elif board.is_seventyfive_moves():
+        print("Draw due to the 75-move rule. Game over.")
+    elif board.is_fivefold_repetition():
+        print("Draw due to fivefold repetition. Game over.")
+
+if __name__ == "__main__":
+    play_chess()
